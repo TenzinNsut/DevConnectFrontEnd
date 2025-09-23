@@ -1,0 +1,48 @@
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+
+import Body from "./Body";
+import Home from "./components/Home";
+import Login from "./components/Login";
+import Signup from "./components/Signup";
+import UserProfile from "./components/UserProfile";
+import ForgotPassword from "./components/ForgotPassword";
+import ResetPassword from "./components/ResetPassword";
+import Connections from "./components/Connections";
+import Requests from "./components/Requests";
+import Feed from "./components/Feed";
+
+function App() {
+  const user = useSelector((store) => store.user);
+
+  return (
+    <BrowserRouter basename="/">
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/forgot" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+
+        {/* Unauthenticated Home Page */}
+        <Route path="/" element={user ? <Navigate to="/feed" replace /> : <Home />} />
+
+        {/* Authenticated Routes (using Body as a layout) */}
+        {user && (
+          <Route element={<Body />}> {/* Body acts as a layout for these routes */}
+            <Route path="/feed" element={<Feed />} />
+            <Route path="/profile" element={<UserProfile />} />
+            <Route path="/connections" element={<Connections />} />
+            <Route path="/requests" element={<Requests />} />
+            {/* Add more authenticated routes here */}
+          </Route>
+        )}
+
+        {/* Catch-all for unmatched routes (redirect to login if not authenticated, or feed if authenticated) */}
+        <Route path="*" element={user ? <Navigate to="/feed" replace /> : <Navigate to="/login" replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;
