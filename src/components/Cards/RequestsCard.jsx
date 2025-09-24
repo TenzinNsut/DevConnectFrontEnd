@@ -49,7 +49,9 @@ const RequestsCard = ({  user, reviewRequest, id} ) => {
             {skillsArray.map((skill, index) => (
               <span
                 key={index}
-                className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-xs px-3 py-1.5 rounded-full shadow-md whitespace-nowrap"
+                                className="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-xs px-3 py-1.5 rounded-full shadow-md whitespace-nowrap"
+
+                // className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-xs px-3 py-1.5 rounded-full shadow-md whitespace-nowrap"
               >
                 {skill}
               </span>
@@ -59,10 +61,18 @@ const RequestsCard = ({  user, reviewRequest, id} ) => {
 
         {/* Action Buttons */}
         <div className="flex justify-between pt-4 gap-3">
-          <button onClick={() => reviewRequest( "rejected" , id )} className=" cursor-pointer flex-1 text-shadow-2xs bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-2xl shadow-lg transition">
+          <button onClick={() => reviewRequest("rejected", id)}
+            // className=" cursor-pointer flex-1 text-shadow-2xs bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-2xl shadow-lg transition"
+                        className="cursor-pointer flex-1 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 rounded-2xl shadow-lg transition duration-300 border border-gray-600 hover:border-gray-500 transform hover:scale-105"
+
+          >
             ✖ Pass
           </button>
-          <button onClick={()=> reviewRequest("accepted", id)} className=" cursor-pointer flex-1 text-shadow-2xs bg-pink-600 hover:bg-pink-700 text-white font-semibold py-3 rounded-2xl shadow-lg transition">
+          <button onClick={() => reviewRequest("accepted", id)}
+            // className=" cursor-pointer flex-1 text-shadow-2xs bg-pink-600 hover:bg-pink-700 text-white font-semibold py-3 rounded-2xl shadow-lg transition"
+                        className="cursor-pointer flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-3 rounded-2xl shadow-lg transition duration-300 transform hover:scale-105"
+
+          >
             ✅ Accept
           </button>
         </div>

@@ -27,13 +27,11 @@ const ResetPassword = () => {
         });
     }
 
-
     const handleResetPassword = async (e) => {
         e.preventDefault();
         setError('');
         setSuccessMessage('');
         setIsLoading(false);
-
         // Validate password
         if (newPassword !== confirmPassword) {
             setError("Password do not match");
@@ -46,7 +44,6 @@ const ResetPassword = () => {
             setIsLoading(false);
             return;
         }
-
         try {
             await axios.patch(
                 BASE_URL + "/reset-password",
@@ -60,7 +57,6 @@ const ResetPassword = () => {
                 navigate("/login");
             }, 5000)
 
-
         } catch (error) {
             setError(error.response?.data?.message || "Something went wrong!");
             console.error(error);
@@ -69,24 +65,26 @@ const ResetPassword = () => {
         }
     }
 
-
-
     return (
-        <div>
-            <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-                <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                    <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-white">
-                        Reset Your Password
-                    </h2>
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-950 to-gray-900 text-white px-6">
+            <div className="w-full max-w-md">
+                {/* Header */}
+                <div className="text-center mb-8">
+                    <h1 className="text-3xl font-bold text-white mb-3">Reset Your Password</h1>
+                    <p className="text-gray-400 leading-relaxed">
+                        Enter your reset token and create a new secure password for your DevConnect account.
+                    </p>
                 </div>
 
-                <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+                {/* Form Card */}
+                <div className="bg-gray-900/50 backdrop-blur-xl rounded-2xl shadow-xl p-8 border border-gray-800">
                     <form onSubmit={handleResetPassword} className="space-y-6">
+                        {/* Reset Token Field */}
                         <div>
-                            <label htmlFor="resetToken" className="block text-sm font-medium leading-6 text-gray-100">
-                                Paste the Reset Token
+                            <label htmlFor="resetToken" className="block text-sm font-medium text-gray-300 mb-2">
+                                Reset Token
                             </label>
-                            <div className="mt-2 relative">
+                            <div className="relative">
                                 <input
                                     id="resetToken"
                                     name="resetToken"
@@ -94,12 +92,13 @@ const ResetPassword = () => {
                                     value={resetToken}
                                     onChange={(e) => setResetToken(e.target.value)}
                                     required
-                                    className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-white outline-1 -outline-offset-1 outline-white/10 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500"
+                                    placeholder="Paste your reset token here"
+                                    className="w-full rounded-lg bg-gray-800/50 border border-gray-700 text-white px-4 py-3 pr-12 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-colors placeholder-gray-500"
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowResetToken(!showResetToken)}
-                                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-200"
+                                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-300"
                                 >
                                     {showResetToken ? (
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
@@ -115,11 +114,12 @@ const ResetPassword = () => {
                             </div>
                         </div>
 
+                        {/* New Password Field */}
                         <div>
-                            <label htmlFor="newPassword" className="block text-sm font-medium leading-6 text-gray-100">
+                            <label htmlFor="newPassword" className="block text-sm font-medium text-gray-300 mb-2">
                                 New Password
                             </label>
-                            <div className="mt-2 relative">
+                            <div className="relative">
                                 <input
                                     id="newPassword"
                                     name="newPassword"
@@ -127,12 +127,13 @@ const ResetPassword = () => {
                                     value={newPassword}
                                     onChange={(e) => setNewPassword(e.target.value)}
                                     required
-                                    className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-white outline-1 -outline-offset-1 outline-white/10 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500"
+                                    placeholder="Enter your new password"
+                                    className="w-full rounded-lg bg-gray-800/50 border border-gray-700 text-white px-4 py-3 pr-12 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-colors placeholder-gray-500"
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowNewPassword(!showNewPassword)}
-                                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-200"
+                                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-300"
                                 >
                                     {showNewPassword ? (
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
@@ -148,11 +149,12 @@ const ResetPassword = () => {
                             </div>
                         </div>
 
+                        {/* Confirm Password Field */}
                         <div>
-                            <label htmlFor="confirmPassword" className="block text-sm font-medium leading-6 text-gray-100">
+                            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300 mb-2">
                                 Confirm Password
                             </label>
-                            <div className="mt-2 relative">
+                            <div className="relative">
                                 <input
                                     id="confirmPassword"
                                     name="confirmPassword"
@@ -160,12 +162,13 @@ const ResetPassword = () => {
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                     required
-                                    className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-white outline-1 -outline-offset-1 outline-white/10 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500"
+                                    placeholder="Confirm your new password"
+                                    className="w-full rounded-lg bg-gray-800/50 border border-gray-700 text-white px-4 py-3 pr-12 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-colors placeholder-gray-500"
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-200"
+                                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-300"
                                 >
                                     {showConfirmPassword ? (
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
@@ -181,26 +184,58 @@ const ResetPassword = () => {
                             </div>
                         </div>
 
+                        {/* Error/Success Messages */}
                         {error && (
-                            <p className="text-red-500 text-sm text-center">{error}</p>
+                            <div className="bg-red-900/20 border border-red-800 rounded-lg p-4">
+                                <p className="text-red-400 text-sm text-center leading-relaxed">{error}</p>
+                            </div>
                         )}
+                        
                         {successMessage && (
-                            <p className="text-green-500 text-sm text-center">{successMessage}</p>
+                            <div className="bg-green-900/20 border border-green-800 rounded-lg p-4">
+                                <div className="flex items-start gap-3">
+                                    <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                                        <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
+                                    <p className="text-green-400 text-sm leading-relaxed">{successMessage}</p>
+                                </div>
+                            </div>
                         )}
 
-                        <div>
-                            <button
-                                type="submit"
-                                disabled={isLoading}
-                                className="btn flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:opacity-50"
-                            >
-                                {isLoading ? 'Resetting...' : 'Reset Password'}
-                            </button>
+                        {/* Submit Button */}
+                        <button
+                            type="submit"
+                            disabled={isLoading}
+                            className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 disabled:from-gray-600 disabled:to-gray-700 text-white font-semibold py-4 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-[1.02] disabled:scale-100 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        >
+                            {isLoading ? (
+                                <>
+                                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                    Resetting Password...
+                                </>
+                            ) : (
+                                'Reset Password'
+                            )}
+                        </button>
+
+                        {/* Security Info */}
+                        <div className="text-center pt-4">
+                            <p className="text-gray-500 text-xs leading-relaxed">
+                                Make sure your new password is strong and unique to keep your DevConnect account secure.
+                            </p>
                         </div>
                     </form>
                 </div>
-            </div>
 
+                {/* Additional Help */}
+                <div className="text-center mt-6">
+                    <p className="text-gray-500 text-xs">
+                        Having trouble? Check your email for the reset token or contact support.
+                    </p>
+                </div>
+            </div>
         </div>
     )
 }

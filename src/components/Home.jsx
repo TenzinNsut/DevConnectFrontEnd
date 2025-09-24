@@ -4,14 +4,12 @@ import { Link  } from "react-router-dom";
 
 const Home = () => {
   return (
-    // <div className="min-h-screen bg-gradient-to-b from-gray-950 to-gray-900 text-white">
-          <div className="min-h-screen bg-gradient-to-b from-gray-950 to-gray-900 text-white">
-
+      <div className="min-h-screen bg-gradient-to-b from-gray-950 to-gray-900 text-white">
       {/* Header Section */}
       <div className="flex flex-col items-center justify-center py-20 px-6 text-center mb-30 pt-50 ">
         <div className="mb-4">
           <span className="inline-flex items-center text-sm text-gray-400 mb-6">
-            ⭐ #1 Developer Networking Platform
+            ⭐ Developer Networking Platform
           </span>
         </div>
         

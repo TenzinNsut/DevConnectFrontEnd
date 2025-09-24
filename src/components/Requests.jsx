@@ -48,7 +48,7 @@ const Requests = () => {
 
 
   return (
-             <div className="min-h-screen flex flex-col items-center py-12 px-6 bg-gradient-to-b from-gray-900 to-black text-white">
+             <div className="min-h-screen flex flex-col items-center py-12 px-6 bg-gradient-to-b from-gray-950 to-gray-900 text-white">
 
             <h1 className="text-3xl font-bold mb-8">✨ Requests Recieved</h1>
 
@@ -60,8 +60,8 @@ const Requests = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full max-w-6xl">
                 {requestsRecieved && requestsRecieved.length > 0 ? (
-                    requestsRecieved.map((user) => (
-                        <RequestsCard key={user._id} user={user} id={user._id} reviewRequest={reviewRequest} />
+                    requestsRecieved.map((request) => (
+                        <RequestsCard key={request._id} user={request} id={request._id} reviewRequest={reviewRequest} />
                     ))
                 ) : (
                     <p className="text-gray-400 text-lg col-span-full text-center">
@@ -74,4 +74,4 @@ const Requests = () => {
   )
 }
 
-export default Requests
+export default Requests;

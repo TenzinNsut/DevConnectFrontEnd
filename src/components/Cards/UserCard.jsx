@@ -24,7 +24,7 @@ const UserCard = ({ user, handleSendRequest }) => {
   };
 
   return (
-    <div className="w-full max-w-sm mx-auto">
+    <div className="max-w-sm w-full bg-gradient-to-b from-gray-900 to-gray-800 text-white rounded-3xl shadow-xl overflow-hidden border border-gray-700 transform hover:scale-[1.02] transition duration-300">
       <div
         className={`relative bg-gradient-to-b from-gray-900 to-gray-800 text-white rounded-3xl shadow-2xl overflow-hidden
           transition-all duration-300 ease-out
@@ -49,7 +49,7 @@ const UserCard = ({ user, handleSendRequest }) => {
         {/* Content */}
         <div className="p-6 space-y-5">
           <span className="inline-block text-xs uppercase tracking-wider bg-gray-700 px-3 py-1 rounded-full">{gender}</span>
-          <p className="text-gray-300 leading-relaxed text-sm">{about}</p>
+          <p className="text-gray-300 leading-relaxed line-clamp-3">{about}</p>
 
           {skillsArray.length > 0 && (
             <div>
@@ -58,7 +58,7 @@ const UserCard = ({ user, handleSendRequest }) => {
                 {skillsArray.map((skill, index) => (
                   <span
                     key={index}
-                    className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-xs px-3 py-1.5 rounded-full shadow-md"
+                    className="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-xs px-3 py-1.5 rounded-full shadow-md whitespace-nowrap"
                   >
                     {skill}
                   </span>
@@ -72,7 +72,7 @@ const UserCard = ({ user, handleSendRequest }) => {
             <button
               onClick={() => handleButtonClick('ignored', _id)}
               disabled={isAnimating}
-              className={`flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3.5 rounded-2xl shadow-lg transition duration-300
+              className={`cursor-pointer flex-1 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 rounded-2xl shadow-lg transition duration-300 border border-gray-600 hover:border-gray-500 transform hover:scale-105
                 ${isAnimating ? 'opacity-75 cursor-not-allowed' : 'transform hover:scale-105 hover:shadow-xl'}`}
             >
               ✖ Pass
@@ -80,7 +80,7 @@ const UserCard = ({ user, handleSendRequest }) => {
             <button
               onClick={() => handleButtonClick('interested', _id)}
               disabled={isAnimating}
-              className={`flex-1 bg-pink-600 hover:bg-pink-700 text-white font-semibold py-3.5 rounded-2xl shadow-lg transition duration-300
+              className={`cursor-pointer flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-3 rounded-2xl shadow-lg transition duration-300 transform hover:scale-105
                 ${isAnimating ? 'opacity-75 cursor-not-allowed' : 'transform hover:scale-105 hover:shadow-xl'}`}
             >
               💝 Connect

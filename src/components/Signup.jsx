@@ -7,7 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import Confetti from "react-confetti";
 import { useWindowSize } from "react-use";
-
+import { Eye, EyeOff } from 'lucide-react';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -22,8 +22,6 @@ const Signup = () => {
     skills: [],
   });
 
-
-
   const [apiError, setApiError] = useState('');
   const [success, setSuccess] = useState('');
   const [formErrors, setFormErrors] = useState({});
@@ -31,9 +29,6 @@ const Signup = () => {
   const navigate = useNavigate();
   const { width, height } = useWindowSize(); // screen size for confetti
   const [showModal, setShowModal] = useState(false);
-
-
-
 
   const validateField = (name, value) => {
     let error = null;
@@ -107,7 +102,6 @@ const Signup = () => {
     return error;
   };
 
-
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -174,118 +168,144 @@ const Signup = () => {
       console.error(err);
     }
   };
+
   return (
     <>
       <div className="bg-gradient-to-b from-gray-950 to-gray-900 min-h-screen text-white">
-        <div className="container mx-auto px-4 py-12">
-          <div className="flex flex-col lg:flex-row gap-12">
+        {/* Header */}
+        <div className="pt-12 pb-8 text-center">
+          <h1 className="text-4xl font-bold text-white mb-2">Join DevConnect</h1>
+          <p className="text-gray-400">Create your developer profile and start connecting</p>
+        </div>
+
+        <div className="container mx-auto px-4 pb-12">
+          <div className="flex flex-col lg:flex-row gap-12 max-w-7xl mx-auto">
 
             {/* Form Section */}
             <div className="w-full lg:w-1/2">
-              <div className="bg-gray-900/80 backdrop-blur-xl rounded-3xl shadow-xl p-8 border border-gray-800">
-                <h2 className="text-2xl font-bold text-white mb-6 text-center">Edit Profile</h2>
-                <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="bg-gray-900/50 backdrop-blur-xl rounded-2xl shadow-xl p-8 border border-gray-800">
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Name Fields */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-400 mb-2">First Name</label>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        First Name
+                      </label>
                       <input
                         type="text"
                         name="firstName"
                         value={formData.firstName}
                         onChange={handleChange}
                         placeholder="Enter first name"
-                        className={`w-full rounded-lg bg-gray-800 border ${formErrors.firstName ? 'border-red-500' : 'border-gray-700'} text-white px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none`}
+                        className={`w-full rounded-lg bg-gray-800/50 border ${
+                          formErrors.firstName ? 'border-red-500' : 'border-gray-700'
+                        } text-white px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-colors`}
                       />
-                      {formErrors.firstName && <p className="text-red-500 text-xs mt-1">{formErrors.firstName}</p>}
+                      {formErrors.firstName && (
+                        <p className="text-red-400 text-sm mt-1">{formErrors.firstName}</p>
+                      )}
                     </div>
+                    
                     <div>
-                      <label className="block text-sm font-medium text-gray-400 mb-2">Last Name</label>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        Last Name
+                      </label>
                       <input
                         type="text"
                         name="lastName"
                         value={formData.lastName}
                         onChange={handleChange}
                         placeholder="Enter last name"
-                        className={`w-full rounded-lg bg-gray-800 border ${formErrors.lastName ? 'border-red-500' : 'border-gray-700'} text-white px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none`}
+                        className={`w-full rounded-lg bg-gray-800/50 border ${
+                          formErrors.lastName ? 'border-red-500' : 'border-gray-700'
+                        } text-white px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-colors`}
                       />
-                      {formErrors.lastName && <p className="text-red-500 text-xs mt-1">{formErrors.lastName}</p>}
+                      {formErrors.lastName && (
+                        <p className="text-red-400 text-sm mt-1">{formErrors.lastName}</p>
+                      )}
                     </div>
                   </div>
 
-
                   {/* Email and Password */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-400 mb-2">Email Address</label>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        Email Address
+                      </label>
                       <input
-                        type="text"
+                        type="email"
                         name="emailId"
                         value={formData.emailId}
                         onChange={handleChange}
-                        placeholder="Enter you email Address"
-                        className={`w-full rounded-lg bg-gray-800 border ${formErrors.emailId ? 'border-red-500' : 'border-gray-700'} text-white px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none`}
+                        placeholder="Enter your email"
+                        className={`w-full rounded-lg bg-gray-800/50 border ${
+                          formErrors.emailId ? 'border-red-500' : 'border-gray-700'
+                        } text-white px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-colors`}
                       />
-                      {formErrors.emailId && <p className="text-red-500 text-xs mt-1">{formErrors.emailId}</p>}
+                      {formErrors.emailId && (
+                        <p className="text-red-400 text-sm mt-1">{formErrors.emailId}</p>
+                      )}
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-400 mb-2  ">Password</label>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        Password
+                      </label>
                       <div className="relative">
                         <input
                           type={showNewPassword ? "text" : "password"}
                           name="password"
                           value={formData.password}
                           onChange={handleChange}
-                          placeholder="Enter you password"
-                          className={`w-full rounded-lg bg-gray-800 border ${formErrors.password ? 'border-red-500' : 'border-gray-700'} text-white px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none`}
+                          placeholder="Enter your password"
+                          className={`w-full rounded-lg bg-gray-800/50 border ${
+                            formErrors.password ? 'border-red-500' : 'border-gray-700'
+                          } text-white px-4 py-3 pr-12 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-colors`}
                         />
-
                         <button
                           type="button"
                           onClick={() => setShowNewPassword(!showNewPassword)}
-                          className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-200"
+                          className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-300"
                         >
-                          {showNewPassword ? (
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
-                            </svg>
-                          ) : (
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                          )}
+                          {showNewPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                         </button>
                       </div>
-
-                      {formErrors.password && <p className="text-red-500 text-xs mt-1">{formErrors.password}</p>}
-
+                      {formErrors.password && (
+                        <p className="text-red-400 text-sm mt-1">{formErrors.password}</p>
+                      )}
                     </div>
-
-
                   </div>
 
-
+                  {/* Age and Gender */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-400 mb-2">Age</label>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        Age
+                      </label>
                       <input
                         type="number"
                         name="age"
                         value={formData.age}
                         onChange={handleChange}
                         placeholder="Enter age"
-                        className={`w-full rounded-lg bg-gray-800 border ${formErrors.age ? 'border-red-500' : 'border-gray-700'} text-white px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none`}
+                        className={`w-full rounded-lg bg-gray-800/50 border ${
+                          formErrors.age ? 'border-red-500' : 'border-gray-700'
+                        } text-white px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-colors`}
                       />
-                      {formErrors.age && <p className="text-red-500 text-xs mt-1">{formErrors.age}</p>}
+                      {formErrors.age && (
+                        <p className="text-red-400 text-sm mt-1">{formErrors.age}</p>
+                      )}
                     </div>
+                    
                     <div>
-                      <label className="block text-sm font-medium text-gray-400 mb-2">Gender</label>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        Gender
+                      </label>
                       <select
                         name="gender"
                         value={formData.gender}
                         onChange={handleChange}
-                        className="w-full rounded-lg bg-gray-800 border border-gray-700 text-white px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"
+                        className="w-full rounded-lg bg-gray-800/50 border border-gray-700 text-white px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-colors"
                       >
                         <option value="male">Male</option>
                         <option value="female">Female</option>
@@ -294,62 +314,90 @@ const Signup = () => {
                     </div>
                   </div>
 
+                  {/* Photo URL */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-2">Profile Photo URL</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Profile Photo URL
+                    </label>
                     <input
                       type="url"
                       name="photoUrl"
                       value={formData.photoUrl}
                       onChange={handleChange}
                       placeholder="Enter image URL"
-                      className={`w-full rounded-lg bg-gray-800 border ${formErrors.photoUrl ? 'border-red-500' : 'border-gray-700'} text-white px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none`}
+                      className={`w-full rounded-lg bg-gray-800/50 border ${
+                        formErrors.photoUrl ? 'border-red-500' : 'border-gray-700'
+                      } text-white px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-colors`}
                     />
-                    {formErrors.photoUrl && <p className="text-red-500 text-xs mt-1">{formErrors.photoUrl}</p>}
+                    {formErrors.photoUrl && (
+                      <p className="text-red-400 text-sm mt-1">{formErrors.photoUrl}</p>
+                    )}
                   </div>
 
+                  {/* About */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-2">About</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      About
+                    </label>
                     <textarea
                       name="about"
                       value={formData.about}
                       onChange={handleChange}
                       rows="4"
                       placeholder="Write something about yourself..."
-                      className={`w-full rounded-lg bg-gray-800 border ${formErrors.about ? 'border-red-500' : 'border-gray-700'} text-white px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none resize-none`}
-                    ></textarea>
-                    {formErrors.about && <p className="text-red-500 text-xs mt-1">{formErrors.about}</p>}
+                      className={`w-full rounded-lg bg-gray-800/50 border ${
+                        formErrors.about ? 'border-red-500' : 'border-gray-700'
+                      } text-white px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none resize-none transition-colors`}
+                    />
+                    {formErrors.about && (
+                      <p className="text-red-400 text-sm mt-1">{formErrors.about}</p>
+                    )}
                   </div>
 
+                  {/* Skills */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-2">Skills (comma separated)</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Skills (comma separated)
+                    </label>
                     <input
                       type="text"
                       name="skills"
                       value={formData.skills}
                       onChange={handleChange}
                       placeholder="e.g. React, Node.js, Python"
-                      className={`w-full rounded-lg bg-gray-800 border ${formErrors.skills ? 'border-red-500' : 'border-gray-700'} text-white px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none`}
+                      className={`w-full rounded-lg bg-gray-800/50 border ${
+                        formErrors.skills ? 'border-red-500' : 'border-gray-700'
+                      } text-white px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-colors`}
                     />
-                    {formErrors.skills && <p className="text-red-500 text-xs mt-1">{formErrors.skills}</p>}
+                    {formErrors.skills && (
+                      <p className="text-red-400 text-sm mt-1">{formErrors.skills}</p>
+                    )}
                   </div>
 
-                  <div className="pt-2">
-                    <button
-                      type="submit"
-                      className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl shadow-lg transition"
-                    >
-                      Sign Up
-                    </button>
-                  </div>
+                  {/* Submit Button */}
+                  <button
+                    type="submit"
+                    className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-4 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-[1.02]"
+                  >
+                    Create Account
+                  </button>
+
+                  {/* Error Message */}
+                  {apiError && (
+                    <div className="bg-red-900/20 border border-red-800 rounded-lg p-3">
+                      <p className="text-red-400 text-sm text-center">{apiError}</p>
+                    </div>
+                  )}
                 </form>
-                {apiError && (<p className="text-red-500 mt-4 text-center">{apiError}</p>)}
               </div>
             </div>
 
             {/* Preview Section */}
             <div className="w-full lg:w-1/2">
-              <div className="lg:sticky top-28">
-                <h3 className="text-center text-2xl font-bold text-white mb-6">Live Preview</h3>
+              <div className="lg:sticky top-8">
+                <h3 className="text-center text-2xl font-bold text-white mb-6">
+                  Live Preview
+                </h3>
                 <div className="flex justify-center">
                   <UserCard user={formData} />
                 </div>
@@ -360,55 +408,48 @@ const Signup = () => {
         </div>
       </div>
 
-      
-          {/* Confetti always overlays everything */}
-       {success && (
-                  <>
-                    {/* <p className="text-green-500 mt-4 text-center">{success}</p> */}
-                    <Confetti
-                      width={width}
-                      height={height}
-                      recycle={false}   // makes confetti stop instead of looping
-            numberOfPieces={400} // adjust pieces as needed
-                    style={{ zIndex: 100 }}
-                    />
-                  </>
-                )}
+      {/* Confetti always overlays everything */}
+      {success && (
+        <Confetti
+          width={width}
+          height={height}
+          recycle={false}   // makes confetti stop instead of looping
+          numberOfPieces={400} // adjust pieces as needed
+          style={{ zIndex: 100 }}
+        />
+      )}
 
+      {/* Success Modal */}
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
 
-
-    {/* Success Modal */}
-    {showModal && (
-      <div className="fixed inset-0 flex items-center justify-center z-50">
-        {/* Backdrop */}
-        <div className="absolute inset-0 bg-black/30 backdrop-blur-sm"></div>
-
-        {/* Modal Box */}
-        <div className="relative bg-gray-900 rounded-2xl p-8 text-center max-w-md shadow-2xl z-50">
-          <h2 className="text-2xl font-bold text-green-400 mb-4">Signup Successful 🎉</h2>
-          <p className="text-gray-300 mb-6">
-            Welcome aboard! You’ll be redirected to the login page in{" "}
-            <span className="font-semibold text-white">10 seconds</span>.
-          </p>
-          <button
-            onClick={() => {
-              setShowModal(false);
-              navigate("/login");
-            }}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2 rounded-xl shadow-lg transition"
-          >
-            Go to Login Now
-          </button>
+          {/* Modal Box */}
+          <div className="relative bg-gray-900 rounded-2xl p-8 text-center max-w-md shadow-2xl border border-gray-700">
+            <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </div>
+            <h2 className="text-2xl font-bold text-green-400 mb-4">Welcome to DevConnect!</h2>
+            <p className="text-gray-300 mb-6">
+              Your account has been created successfully. You'll be redirected to the login page in{" "}
+              <span className="font-semibold text-white">10 seconds</span>.
+            </p>
+            <button
+              onClick={() => {
+                setShowModal(false);
+                navigate("/login");
+              }}
+              className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold px-8 py-3 rounded-xl shadow-lg transition-all duration-300"
+            >
+              Go to Login Now
+            </button>
+          </div>
         </div>
-      </div>
-    )}
-
-
-
-
-
+      )}
     </>
-
   );
 };
 
