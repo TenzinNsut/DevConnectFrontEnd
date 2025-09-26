@@ -1,9 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux"; // Import useDispatch
-import { useEffect, useState } from "react"; // Import useState
-import axios from "axios"; // Import axios
-import { BASE_URL } from "./utils/constants"; // Import BASE_URL
-import { addUser } from "./utils/userSlice"; // Import addUser
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect, useState, useCallback } from "react"; // Import useCallback
+import axios from "axios";
+import { BASE_URL } from "./utils/constants";
+import { addUser } from "./utils/userSlice";
 
 import Body from "./Body";
 import Home from "./components/Home";
@@ -15,35 +15,35 @@ import ResetPassword from "./components/ResetPassword";
 import Connections from "./components/Connections";
 import Requests from "./components/Requests";
 import Feed from "./components/Feed";
+import ChatContainer from "./components/Chat/ChatContainer";
 
 function App() {
   const user = useSelector((store) => store.user);
-  const dispatch = useDispatch(); // Initialize useDispatch
-  const [loading, setLoading] = useState(true); // Add loading state
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
 
-  // Function to fetch user data
-  const fetchUser = async () => {
+  // Memoize fetchUser with useCallback to fix the dependency warning
+  const fetchUser = useCallback(async () => {
     try {
       const res = await axios.get(
-        BASE_URL + "/profile/view",
+        `${BASE_URL}/profile/view`,
         { withCredentials: true }
       );
       dispatch(addUser(res.data));
     } catch (error) {
-      // If there's an error (e.g., 401 Unauthorized), it means no valid session
       console.error("Failed to fetch user on app load:", error);
-      dispatch(addUser(null)); // Explicitly set user to null if fetch fails
+      dispatch(addUser(null));
     } finally {
-      setLoading(false); // Set loading to false after attempt
+      setLoading(false);
     }
-  };
+  }, [dispatch]);
 
   useEffect(() => {
     fetchUser();
-  }, []); // Run once on component mount
+  }, [fetchUser]); // Correctly add fetchUser to the dependency array
 
   if (loading) {
-    // Show a loading spinner or splash screen while checking auth status
+    // ... loading spinner ...
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-950 to-gray-900 text-white">
         <div className="text-center">
@@ -80,6 +80,7 @@ function App() {
         {/* Catch-all for unmatched routes (redirect to login if not authenticated, or feed if authenticated) */}
         <Route path="*" element={user ? <Navigate to="/feed" replace /> : <Navigate to="/login" replace />} />
       </Routes>
+      {user && <ChatContainer />}
     </BrowserRouter>
   );
 }

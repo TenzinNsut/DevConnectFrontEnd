@@ -10,6 +10,8 @@ import {clearConnections} from "../utils/connectionSlice"
 
 const Navbar = () => {
   const user = useSelector((store) => {return store.user } ); // get the user from store
+  const { notifications } = useSelector((store) => store.chat) || {};
+  const hasNotifications = notifications ? Object.keys(notifications).length > 0 : false;
   const logo = "</> DevConnect";
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -76,7 +78,10 @@ const Navbar = () => {
                   <Link to="/feed">Discover</Link>
                 </li>
                 <li>
-                  <Link to="/connections">My Connections</Link>
+                  <Link to="/connections">
+                    My Connections
+                    {hasNotifications && <span className="badge badge-sm badge-error animate-pulse">!</span>}
+                  </Link>
                 </li>
                   <li>
                   <Link to="/requests">Requests Recieved</Link>
