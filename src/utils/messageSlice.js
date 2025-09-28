@@ -21,11 +21,39 @@ export const fetchMessages = createAsyncThunk(
     }
 );
 
+// Async thunk to fetch unread messages
+export const fetchUnreadMessages = createAsyncThunk(
+    'messages/fetchUnreadMessages',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await axios.get(`${BASE_URL}/unread-messages`, { withCredentials: true });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+// Async thunk to mark messages as read
+export const markMessagesAsRead = createAsyncThunk(
+    'messages/markMessagesAsRead',
+    async (otherUserId, { rejectWithValue }) => {
+        try {
+            await axios.put(`${BASE_URL}/mark-read/${otherUserId}`, {}, { withCredentials: true });
+            return otherUserId;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
 const messageSlice = createSlice({
     name: 'messages',
     initialState: {
         conversations: {}, // { conversationId: [messages] }
         status: {}, // { conversationId: 'idle' | 'loading' | 'succeeded' | 'failed' }
+        unreadMessages: [], // Array of unread message summaries
+        unreadCount: 0,
     },
     reducers: {
         addMessage: (state, action) => {
@@ -66,6 +94,17 @@ const messageSlice = createSlice({
                 const { loggedInUserId, otherUserId } = action.meta.arg;
                 const conversationId = getConversationId(loggedInUserId, otherUserId);
                 state.status[conversationId] = 'failed';
+            })
+            .addCase(fetchUnreadMessages.fulfilled, (state, action) => {
+                state.unreadMessages = action.payload;
+                state.unreadCount = action.payload.reduce((total, item) => total + item.count, 0);
+            })
+            .addCase(markMessagesAsRead.fulfilled, (state, action) => {
+                const otherUserId = action.payload;
+                // Remove unread messages for this user
+                state.unreadMessages = state.unreadMessages.filter(item => item.senderId !== otherUserId);
+                // Update total unread count
+                state.unreadCount = state.unreadMessages.reduce((total, item) => total + item.count, 0);
             });
     },
 });

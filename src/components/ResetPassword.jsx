@@ -16,6 +16,7 @@ const ResetPassword = () => {
     const [showResetToken, setShowResetToken] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    // const [isLoading, setIsLoading] = useState(false);
 
     const isValidPassowrd = (pwd) => {
         return validator.isStrongPassword(pwd, {

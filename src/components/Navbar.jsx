@@ -11,7 +11,9 @@ import {clearConnections} from "../utils/connectionSlice"
 const Navbar = () => {
   const user = useSelector((store) => {return store.user } ); // get the user from store
   const { notifications } = useSelector((store) => store.chat) || {};
+  const { unreadCount } = useSelector((store) => store.messages) || {};
   const hasNotifications = notifications ? Object.keys(notifications).length > 0 : false;
+  const hasUnreadMessages = unreadCount > 0;
   const logo = "</> DevConnect";
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -55,7 +57,7 @@ const Navbar = () => {
               <div
                 tabIndex={0}
                 role="button"
-                className="btn btn-ghost btn-circle avatar"
+                className="btn btn-ghost btn-circle avatar relative"
               >
                 <div className="cursor-pointer w-10 rounded-full">
                   <img
@@ -63,6 +65,17 @@ const Navbar = () => {
                     src={user.photoUrl}
                   />
                 </div>
+                
+                {/* Enhanced Notification Badge */}
+                {(hasNotifications || hasUnreadMessages) && (
+                  <div className="absolute top-6 -right-1 bg-green-600 border-2 border-gray-900 rounded-full p-1">
+                    <div className="w-2 h-2 bg-green-600 rounded-full flex items-center justify-center animate-pulse">
+                      <span className="text-xs font-bold text-white">
+                        {hasUnreadMessages ? (unreadCount > 9 ? '9+' : unreadCount) : '!'}
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
               <ul
                 tabIndex={0}
@@ -71,16 +84,25 @@ const Navbar = () => {
                 <li>
                   <Link to="/profile" className="justify-between">
                     Profile
-                    <span className="badge">Me!</span>
+                    {/* <span className="badge">Me!</span> */}
                   </Link>
                 </li>
                 <li>
                   <Link to="/feed">Discover</Link>
                 </li>
                 <li>
-                  <Link to="/connections">
-                    My Connections
-                    {hasNotifications && <span className="badge badge-sm badge-error animate-pulse">!</span>}
+                  <Link to="/connections" className="relative">
+                    <div className="flex items-center justify-between w-full">
+                      My Connections
+                      {(hasNotifications || hasUnreadMessages) && (
+                        <div className="">
+                          {hasUnreadMessages ? (unreadCount > 9) ? <span className="badge animate-pulse px-5 bg-green-600 ml-8" > '9+' </span> : <span className="badge animate-pulse px-2 bg-green-600 ml-8" > {unreadCount} </span> : <span className="badge animate-pulse px-2 bg-green-600 ml-8" > !</span>}
+
+                        </div>
+                      )}
+
+                      <span className=""></span>
+                    </div>
                   </Link>
                 </li>
                   <li>

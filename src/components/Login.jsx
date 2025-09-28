@@ -10,6 +10,8 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -17,6 +19,9 @@ const Login = () => {
   // Function: Login
   const handleLogin = async (event) => {
     event.preventDefault();
+    setError("") // Clear any previous error
+    setIsLoading(true); // Start loading
+
     try {
       const res = await axios.post(
         BASE_URL + "/login",
@@ -26,8 +31,30 @@ const Login = () => {
       dispatch(addUser(res.data));
       navigate("/feed");
     } catch (err) {
-      setError(err.response?.data || "Invalid Credentials!");
-      console.error(err);
+      console.error("Login Error:", err);
+      
+      let errorMessage = "Invalid credentials. Please try again."; // Default message
+      
+      if (err.response?.data) {
+        // Handle validation errors (array format)
+        if (err.response.data.errors && Array.isArray(err.response.data.errors)) {
+          errorMessage = err.response.data.errors.map(err => err.message).join(", ");
+        }
+        // Handle custom errors (message format)
+        else if (err.response.data.message) {
+          errorMessage = err.response.data.message;
+        }
+        // Handle plain text errors
+        else if (typeof err.response.data === 'string') {
+          errorMessage = err.response.data;
+        }
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      setError(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -145,9 +172,10 @@ const Login = () => {
             {/* Login Button */}
             <button
               type="submit"
+              disabled={isLoading}
               className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-4 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-[1.02]"
             >
-              Sign in
+            {isLoading ? "Signing in..." : "Sign in"}
             </button>
 
 

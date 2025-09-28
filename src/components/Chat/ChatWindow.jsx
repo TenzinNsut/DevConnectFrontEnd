@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { closeChat } from '../../utils/chatSlice';
-import { fetchMessages } from '../../utils/messageSlice';
+import { fetchMessages, markMessagesAsRead } from '../../utils/messageSlice';
 import { Send } from 'lucide-react';
 import { format } from 'date-fns';
 import {addMessage} from '../../utils/messageSlice'
@@ -26,6 +26,13 @@ const ChatWindow = ({ receiver, socket }) => {
             dispatch(fetchMessages({ loggedInUserId: currentUser._id, otherUserId: receiver._id }));
         }
     }, [receiver, chatStatus, dispatch, currentUser]);
+
+    // Mark messages as read when chat window is opened
+    useEffect(() => {
+        if (receiver?._id && currentUser?._id) {
+            dispatch(markMessagesAsRead(receiver._id));
+        }
+    }, [receiver, currentUser, dispatch]);
 
     // Scroll to bottom when new messages arrive
     useEffect(() => {

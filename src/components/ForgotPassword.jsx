@@ -8,11 +8,13 @@ const ForgotPassword = () => {
     const [error, setError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
     const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleEmailRequest = async (e) => {
         e.preventDefault(); // Prevent form submission default behavior
         setError("");
         setSuccessMessage("");
+        setIsLoading(true);
 
         try {
             if (!emailId.trim()) {
@@ -34,7 +36,9 @@ const ForgotPassword = () => {
         } catch (error) {
             setError(error.response?.data?.message || "Something went wrong!");
             console.error("Forgot password error:", error);
-        } 
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -97,7 +101,9 @@ const ForgotPassword = () => {
                             type="submit"
                             className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-4 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-[1.02]"
                         >
-                            Send Reset Link
+                            
+
+                            {isLoading ? "Sending..." : "Send Reset Link"}
                         </button>
 
                         {/* Back to Login */}
