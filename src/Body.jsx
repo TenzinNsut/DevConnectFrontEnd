@@ -68,9 +68,9 @@ const Body = () => {
   }, [socket, dispatch]);
 
   return (
-    <div className="flex flex-col bg-gradient-to-b from-gray-950 to-gray-900">
+    <div className="flex flex-col min-h-screen bg-black text-[#E1E0CC]">
       <Navbar />
-      <main className="flex-grow pt-20">
+      <main className="flex-grow pt-16">
         <Outlet />
       </main>
       <Footer />

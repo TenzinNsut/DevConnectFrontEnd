@@ -63,20 +63,20 @@ const Login = () => {
   if (user) return <Navigate to="/feed" replace />;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-950 to-gray-900 text-white px-6">
+    <div className="min-h-screen flex items-center justify-center bg-black text-[#E1E0CC] px-6">
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
-          <p className="text-gray-400">Sign in to your DevConnect account</p>
+          <h1 className="text-3xl font-medium tracking-tight mb-2" style={{ color: "#E1E0CC" }}>Welcome Back</h1>
+          <p className="text-sm text-[#E1E0CC]/60 font-normal">Sign in to your DevConnect account</p>
         </div>
 
         {/* Form Card */}
-        <div className="bg-gray-900/50 backdrop-blur-xl rounded-2xl shadow-xl p-8 border border-gray-800">
+        <div className="bg-[#111113] rounded-3xl shadow-2xl p-8 border border-white/10">
           <form onSubmit={handleLogin} className="space-y-6">
             {/* Email Field */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="email" className="block text-xs font-mono uppercase tracking-wider text-[#E1E0CC]/60 mb-2">
                 Email address
               </label>
               <input
@@ -88,19 +88,19 @@ const Login = () => {
                 required
                 autoComplete="off"
                 placeholder="Enter your email"
-                className="w-full rounded-lg bg-gray-800/50 border border-gray-700 text-white px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-colors placeholder-gray-500"
+                className="w-full rounded-2xl bg-black border border-white/10 text-[#E1E0CC] px-4 py-3.5 focus:border-[#E1E0CC]/50 outline-none transition-colors placeholder-[#E1E0CC]/30 text-sm"
               />
             </div>
 
             {/* Password Field */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label htmlFor="password" className="block text-sm font-medium text-gray-300">
+                <label htmlFor="password" className="block text-xs font-mono uppercase tracking-wider text-[#E1E0CC]/60">
                   Password
                 </label>
                 <Link
                   to="/forgot"
-                  className="text-sm font-medium text-green-400 hover:text-green-300 transition-colors"
+                  className="text-xs font-mono text-[#E1E0CC]/60 hover:text-[#E1E0CC] transition-colors"
                 >
                   Forgot password?
                 </Link>
@@ -115,7 +115,7 @@ const Login = () => {
                   required
                   autoComplete="new-password"
                   placeholder="Enter your password"
-                  className="w-full rounded-lg bg-gray-800/50 border border-gray-700 text-white px-4 py-3 pr-12 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-colors placeholder-gray-500"
+                  className="w-full rounded-2xl bg-black border border-white/10 text-[#E1E0CC] px-4 py-3.5 pr-12 focus:border-[#E1E0CC]/50 outline-none transition-colors placeholder-[#E1E0CC]/30 text-sm"
                 />
                 <button
                   type="button"
@@ -173,9 +173,10 @@ const Login = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-4 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-[1.02]"
+              className="w-full py-3.5 px-6 rounded-full font-medium text-sm text-black transition-all hover:opacity-95 shadow-xl disabled:opacity-50 cursor-pointer"
+              style={{ backgroundColor: "#E1E0CC" }}
             >
-            {isLoading ? "Signing in..." : "Sign in"}
+              {isLoading ? "Signing in..." : "Sign In"}
             </button>
 
 

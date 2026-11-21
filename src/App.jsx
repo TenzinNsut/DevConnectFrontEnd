@@ -9,6 +9,9 @@ import Body from "./Body";
 import Home from "./components/Home";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
+import Features from "./components/Features";
+import HowItWorks from "./components/HowItWorks";
+import TechStack from "./components/TechStack";
 import UserProfile from "./components/UserProfile";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
@@ -62,8 +65,11 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/features" element={<Features />} />
+        <Route path="/how-it-works" element={<HowItWorks />} />
+        <Route path="/tech-stack" element={<TechStack />} />
 
-        {/* Unauthenticated Home Page */}
+        {/* Unauthenticated Home Page (100vh Edge-to-Edge Hero with Cursor Parallax) */}
         <Route path="/" element={user ? <Navigate to="/feed" replace /> : <Home />} />
 
         {/* Authenticated Routes (using Body as a layout) */}

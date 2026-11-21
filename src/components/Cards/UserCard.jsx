@@ -1,64 +1,82 @@
 import { useState } from 'react';
+import { X, ArrowRight, Terminal } from 'lucide-react';
 
 const UserCard = ({ user, handleSendRequest }) => {
   const { _id, firstName, lastName, age, gender, about, photoUrl, skills } = user;
   const [isAnimating, setIsAnimating] = useState(false);
-  const [swipeDirection, setSwipeDirection] = useState(null); // 'left', 'right', or null
+  const [swipeDirection, setSwipeDirection] = useState(null);
+
+  const displayName = (firstName?.trim() || lastName?.trim()) 
+    ? `${firstName || ''} ${lastName || ''}`.trim() 
+    : "Developer Name";
+  const displayAge = age && String(age).trim() ? `${String(age).trim()} yrs old` : "Age";
+  const displayGender = gender || "Developer";
+  const displayAbout = about?.trim() || "Your technical bio and collaboration goals will appear here.";
 
   const skillsArray = Array.isArray(skills)
     ? skills
     : (typeof skills === 'string' && skills.trim().length > 0
-        ? skills.split(',').map(s => s.trim())
+        ? skills.split(',').map(s => s.trim()).filter(Boolean)
         : []);
 
   const handleButtonClick = (status, id) => {
-    if (isAnimating) return; // prevent multiple clicks
+    if (!handleSendRequest || isAnimating) return;
 
     setIsAnimating(true);
     setSwipeDirection(status === 'ignored' ? 'left' : 'right');
 
-    // Delay the Redux update to allow animation to play
     setTimeout(() => {
       handleSendRequest(status, id);
-    }, 300); // Animation duration is 300ms
+    }, 300);
   };
 
   return (
-    <div className="max-w-sm w-full bg-gradient-to-b from-gray-900 to-gray-800 text-white rounded-3xl shadow-xl overflow-hidden border border-gray-700 transform hover:scale-[1.02] transition duration-300">
+    <div className="max-w-md w-full mx-auto select-none">
       <div
-        className={`relative bg-gradient-to-b from-gray-900 to-gray-800 text-white rounded-3xl shadow-2xl overflow-hidden
-          transition-all duration-300 ease-out
+        className={`relative bg-[#111113] border border-white/10 rounded-3xl shadow-2xl overflow-hidden transition-all duration-300 ease-out hover:border-white/20
           ${isAnimating 
-            ? (swipeDirection === 'left' ? '-translate-x-full -rotate-12 opacity-0' : 'translate-x-full rotate-12 opacity-0') 
-            : 'opacity-100 hover:opacity-95'
+            ? (swipeDirection === 'left' ? '-translate-x-full -rotate-6 opacity-0' : 'translate-x-full rotate-6 opacity-0') 
+            : 'opacity-100'
           }`}
       >
         {/* Profile Photo */}
-        <div className="relative">
+        <div className="relative h-96 w-full overflow-hidden bg-black">
           <img
-            src={photoUrl}
+            src={photoUrl || "https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg"}
             alt={`${firstName} ${lastName}`}
-            className="w-full h-80 object-cover"
+            className="w-full h-full object-cover"
           />
-          <div className="absolute bottom-4 left-4 bg-black/70 backdrop-blur-md px-4 py-2 rounded-xl">
-            <h2 className="text-xl font-bold">{firstName} {lastName}</h2>
-            <p className="text-sm text-gray-300">{age} years old</p>
+          <div className="absolute inset-0 bg-gradient-to-t from-[#111113] via-transparent to-black/30"></div>
+
+          {/* Name & Age Overlay */}
+          <div className="absolute bottom-4 left-4 right-4 bg-black/80 backdrop-blur-md p-4 rounded-2xl border border-white/10">
+            <h2 className="text-2xl font-medium tracking-tight text-[#E1E0CC]">{displayName}</h2>
+            <div className="flex items-center gap-2 mt-1">
+              <span className="text-xs text-[#E1E0CC]/70 font-mono">{displayAge}</span>
+              <span className="text-[#E1E0CC]/30">·</span>
+              <span className="text-[10px] uppercase tracking-wider font-mono text-[#E1E0CC]/80 bg-white/5 px-2.5 py-0.5 rounded-full border border-white/10">
+                {displayGender}
+              </span>
+            </div>
           </div>
         </div>
 
         {/* Content */}
         <div className="p-6 space-y-5">
-          <span className="inline-block text-xs uppercase tracking-wider bg-gray-700 px-3 py-1 rounded-full">{gender}</span>
-          <p className="text-gray-300 leading-relaxed line-clamp-3">{about}</p>
+          <p className="text-sm leading-relaxed text-[#E1E0CC]/80 font-normal line-clamp-3">
+            "{displayAbout}"
+          </p>
 
           {skillsArray.length > 0 && (
-            <div>
-              <h3 className="text-sm font-semibold text-gray-400 mb-3">Skills</h3>
-              <div className="flex flex-wrap gap-2">
+            <div className="space-y-2">
+              <span className="text-[11px] font-mono uppercase tracking-wider text-[#E1E0CC]/50">
+                Tech Stack
+              </span>
+              <div className="flex flex-wrap gap-1.5">
                 {skillsArray.map((skill, index) => (
                   <span
                     key={index}
-                    className="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-xs px-3 py-1.5 rounded-full shadow-md whitespace-nowrap"
+                    className="bg-white/5 text-[#E1E0CC]/90 border border-white/10 font-mono text-xs px-2.5 py-1 rounded-full whitespace-nowrap"
                   >
                     {skill}
                   </span>
@@ -68,33 +86,39 @@ const UserCard = ({ user, handleSendRequest }) => {
           )}
 
           {/* Action Buttons */}
-          <div className="flex justify-between pt-4 gap-3">
+          <div className="grid grid-cols-2 gap-3 pt-2">
             <button
               onClick={() => handleButtonClick('ignored', _id)}
               disabled={isAnimating}
-              className={`cursor-pointer flex-1 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 rounded-2xl shadow-lg transition duration-300 border border-gray-600 hover:border-gray-500 transform hover:scale-105
-                ${isAnimating ? 'opacity-75 cursor-not-allowed' : 'transform hover:scale-105 hover:shadow-xl'}`}
+              className={`cursor-pointer group flex items-center justify-center gap-2 py-3 px-4 rounded-full font-medium text-sm bg-black/60 hover:bg-black text-[#E1E0CC]/70 hover:text-[#E1E0CC] border border-white/15 transition-all
+                ${isAnimating ? 'opacity-50 cursor-not-allowed' : 'active:scale-95'}`}
             >
-              ✖ Pass
+              <X className="w-4 h-4 opacity-70 group-hover:opacity-100" />
+              <span>Pass</span>
             </button>
+
             <button
               onClick={() => handleButtonClick('interested', _id)}
               disabled={isAnimating}
-              className={`cursor-pointer flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-3 rounded-2xl shadow-lg transition duration-300 transform hover:scale-105
-                ${isAnimating ? 'opacity-75 cursor-not-allowed' : 'transform hover:scale-105 hover:shadow-xl'}`}
+              className={`cursor-pointer group flex items-center justify-center gap-2 py-3 px-4 rounded-full font-medium text-sm transition-all shadow-xl hover:opacity-95
+                ${isAnimating ? 'opacity-50 cursor-not-allowed' : 'active:scale-95'}`}
+              style={{ backgroundColor: "#E1E0CC", color: "#000000" }}
             >
-              💝 Connect
+              <span>Connect</span>
+              <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         </div>
 
-        {/* Animation Overlay */}
+        {/* Minimal Swipe Feedback Stamp */}
         {isAnimating && (
-          <div className="absolute inset-0 flex items-center justify-center">
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none bg-black/60 backdrop-blur-[2px]">
             <div
-              className={`text-7xl font-bold uppercase ${
-                swipeDirection === 'left' ? 'text-red-500 -rotate-12' : 'text-green-500 rotate-12'
-              } opacity-70`}
+              className={`text-4xl font-mono tracking-widest uppercase border-2 rounded-2xl px-6 py-2.5 transform ${
+                swipeDirection === 'left'
+                  ? 'text-white/40 border-white/40 -rotate-6'
+                  : 'text-[#E1E0CC] border-[#E1E0CC] rotate-6'
+              }`}
             >
               {swipeDirection === 'left' ? 'PASS' : 'CONNECT'}
             </div>
