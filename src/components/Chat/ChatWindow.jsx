@@ -20,19 +20,13 @@ const ChatWindow = ({ receiver, socket }) => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
-    // Fetch message history if it hasn't been fetched yet
-    useEffect(() => {
-        if (receiver?._id && (!chatStatus || chatStatus === 'idle')) {
-            dispatch(fetchMessages({ loggedInUserId: currentUser._id, otherUserId: receiver._id }));
-        }
-    }, [receiver, chatStatus, dispatch, currentUser]);
-
-    // Mark messages as read when chat window is opened
+    // Fetch message history whenever receiver changes or chat is opened
     useEffect(() => {
         if (receiver?._id && currentUser?._id) {
+            dispatch(fetchMessages({ loggedInUserId: currentUser._id, otherUserId: receiver._id }));
             dispatch(markMessagesAsRead(receiver._id));
         }
-    }, [receiver, currentUser, dispatch]);
+    }, [receiver?._id, currentUser?._id, dispatch]);
 
     // Scroll to bottom when new messages arrive
     useEffect(() => {
@@ -43,11 +37,12 @@ const ChatWindow = ({ receiver, socket }) => {
         e.preventDefault();
         if (message.trim() && socket) {
             const messageData = {
-                _id: Date.now().toString(), // Temporary ID for the key
+                _id: Date.now().toString(), // Temporary ID for optimistic rendering
                 senderId: currentUser._id,
                 receiverId: receiver._id,
                 message: message,
-                createdAt: new Date().toISOString(), // Temporary timestamp
+                isOptimistic: true,
+                createdAt: new Date().toISOString(),
             };
 
             // Optimistically update the UI immediately

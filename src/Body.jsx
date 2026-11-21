@@ -31,8 +31,8 @@ const Body = () => {
 
         // Create notification for incoming messages (not from current user)
         // Only show notification if chat window is not open OR if it's open for a different user
-        if (newMessage.senderId !== currentUser?._id) {
-          if (!isChatOpen || receiver?._id !== newMessage.senderId) {
+        if (String(newMessage.senderId) !== String(currentUser?._id)) {
+          if (!isChatOpen || String(receiver?._id) !== String(newMessage.senderId)) {
             dispatch(addNotification(newMessage.senderId));
           }
         }

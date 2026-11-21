@@ -9,6 +9,8 @@ import { useWindowSize } from "react-use";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import DeleteUser from "./DeleteUser";
+import { Upload, Link as LinkIcon, X } from "lucide-react";
+import { DEFAULT_AVATAR, compressImage } from "../utils/imageHelper";
 // import LivePreviewCard from "./Cards/livePreviewCard";
 
 
@@ -28,6 +30,9 @@ const EditProfile = ({ user }) => {
     const [success, setSuccess] = useState('');
     const [formErrors, setFormErrors] = useState({});
     const [toast, setToast] = useState(false);
+    const [imageMode, setImageMode] = useState("upload");
+    const [isProcessingImage, setIsProcessingImage] = useState(false);
+    const [isDragging, setIsDragging] = useState(false);
 
     const { width, height } = useWindowSize(); // screen size for confetti
     // React Redux Store:
@@ -60,8 +65,8 @@ const EditProfile = ({ user }) => {
                 }
                 break;
             case 'photoUrl':
-                if (value && !validator.isURL(value))
-                    error = 'Please enter a valid URL.';
+                if (value && !validator.isURL(value, { require_protocol: true, require_tld: false }) && !validator.isDataURI(value))
+                    error = 'Please enter a valid URL or upload a valid image.';
                 break;
             case 'about':
                 if (value && (value.trim().length < 20 || value.trim().length > 200))
@@ -82,6 +87,54 @@ const EditProfile = ({ user }) => {
         return error;
     };
 
+
+    const handleImageFile = async (file) => {
+        if (!file) return;
+        if (!file.type.startsWith("image/")) {
+            setFormErrors((prev) => ({
+                ...prev,
+                photoUrl: "Please select a valid image file (PNG, JPG, WebP).",
+            }));
+            return;
+        }
+        if (file.size > 10 * 1024 * 1024) {
+            setFormErrors((prev) => ({
+                ...prev,
+                photoUrl: "Image file size should be under 10MB.",
+            }));
+            return;
+        }
+
+        try {
+            setIsProcessingImage(true);
+            const dataUrl = await compressImage(file);
+            setFormData((prev) => ({ ...prev, photoUrl: dataUrl }));
+            setFormErrors((prev) => ({ ...prev, photoUrl: null }));
+        } catch (err) {
+            setFormErrors((prev) => ({
+                ...prev,
+                photoUrl: err.message || "Failed to process image.",
+            }));
+        } finally {
+            setIsProcessingImage(false);
+        }
+    };
+
+    const handleFileInputChange = (e) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            handleImageFile(file);
+        }
+    };
+
+    const handleDrop = (e) => {
+        e.preventDefault();
+        setIsDragging(false);
+        const file = e.dataTransfer.files?.[0];
+        if (file) {
+            handleImageFile(file);
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -223,16 +276,116 @@ const EditProfile = ({ user }) => {
                                         </div>
                                     </div>
 
+                                    {/* Profile Photo Section */}
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-400 mb-2">Profile Photo URL</label>
-                                        <input
-                                            type="url"
-                                            name="photoUrl"
-                                            value={formData.photoUrl}
-                                            onChange={handleChange}
-                                            placeholder="Enter image URL"
-                                            className={`w-full rounded-lg bg-gray-800 border ${formErrors.photoUrl ? 'border-red-500' : 'border-gray-700'} text-white px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none`}
-                                        />
+                                        <div className="flex items-center justify-between mb-2">
+                                            <label className="block text-sm font-medium text-gray-400">Profile Photo</label>
+                                            <div className="flex items-center bg-gray-800 p-0.5 rounded-lg border border-gray-700 text-xs">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setImageMode("upload")}
+                                                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md transition-colors cursor-pointer ${
+                                                        imageMode === "upload"
+                                                            ? "bg-indigo-600 text-white font-medium shadow"
+                                                            : "text-gray-400 hover:text-gray-200"
+                                                    }`}
+                                                >
+                                                    <Upload className="w-3.5 h-3.5" />
+                                                    Upload Image
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setImageMode("url")}
+                                                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md transition-colors cursor-pointer ${
+                                                        imageMode === "url"
+                                                            ? "bg-indigo-600 text-white font-medium shadow"
+                                                            : "text-gray-400 hover:text-gray-200"
+                                                    }`}
+                                                >
+                                                    <LinkIcon className="w-3.5 h-3.5" />
+                                                    Image URL
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {imageMode === "upload" ? (
+                                            <div className="space-y-3">
+                                                <div
+                                                    onDragOver={(e) => {
+                                                        e.preventDefault();
+                                                        setIsDragging(true);
+                                                    }}
+                                                    onDragLeave={() => setIsDragging(false)}
+                                                    onDrop={handleDrop}
+                                                    className={`relative border-2 border-dashed rounded-xl p-5 text-center transition-all ${
+                                                        isDragging
+                                                            ? "border-indigo-500 bg-indigo-500/10"
+                                                            : "border-gray-700 hover:border-gray-600 bg-gray-800/40"
+                                                    }`}
+                                                >
+                                                    <input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        id="edit-photo-upload"
+                                                        onChange={handleFileInputChange}
+                                                        className="hidden"
+                                                    />
+                                                    <label
+                                                        htmlFor="edit-photo-upload"
+                                                        className="cursor-pointer flex flex-col items-center justify-center space-y-2"
+                                                    >
+                                                        <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-indigo-400 border border-gray-700">
+                                                            {isProcessingImage ? (
+                                                                <div className="animate-spin rounded-full h-5 w-5 border-2 border-indigo-500 border-t-transparent" />
+                                                            ) : (
+                                                                <Upload className="w-5 h-5" />
+                                                            )}
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-sm font-medium text-white">
+                                                                {isProcessingImage ? "Optimizing image..." : "Click to choose file or drag & drop"}
+                                                            </p>
+                                                            <p className="text-xs text-gray-400 mt-0.5">PNG, JPG, or WebP</p>
+                                                        </div>
+                                                    </label>
+                                                </div>
+
+                                                {formData.photoUrl && formData.photoUrl !== DEFAULT_AVATAR && (
+                                                    <div className="flex items-center justify-between p-2.5 bg-gray-800/60 border border-gray-700 rounded-xl">
+                                                        <div className="flex items-center gap-3">
+                                                            <img
+                                                                src={formData.photoUrl}
+                                                                alt="Preview"
+                                                                className="w-10 h-10 rounded-lg object-cover border border-gray-600"
+                                                            />
+                                                            <span className="text-xs text-indigo-400 font-medium">New photo selected</span>
+                                                        </div>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                setFormData((prev) => ({ ...prev, photoUrl: DEFAULT_AVATAR }));
+                                                                setFormErrors((prev) => ({ ...prev, photoUrl: null }));
+                                                            }}
+                                                            className="cursor-pointer flex items-center gap-1 text-xs text-red-400 hover:text-red-300 px-2 py-1 rounded bg-red-950/40 hover:bg-red-950/60 transition"
+                                                        >
+                                                            <X className="w-3.5 h-3.5" />
+                                                            Reset to Default
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <div>
+                                                <input
+                                                    type="url"
+                                                    name="photoUrl"
+                                                    value={formData.photoUrl}
+                                                    onChange={handleChange}
+                                                    placeholder="Enter image URL"
+                                                    className={`w-full rounded-lg bg-gray-800 border ${formErrors.photoUrl ? 'border-red-500' : 'border-gray-700'} text-white px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none`}
+                                                />
+                                            </div>
+                                        )}
                                         {formErrors.photoUrl && <p className="text-red-500 text-xs mt-1">{formErrors.photoUrl}</p>}
                                     </div>
 

@@ -7,21 +7,25 @@ import { Link, useNavigate } from "react-router-dom";
 
 import Confetti from "react-confetti";
 import { useWindowSize } from "react-use";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Upload, Link as LinkIcon, X } from "lucide-react";
+import { DEFAULT_AVATAR, compressImage } from "../utils/imageHelper";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
-    firstName: " ",
-    lastName: " ",
-    emailId: " ",
+    firstName: "",
+    lastName: "",
+    emailId: "",
     password: "",
-    age: " ",
+    age: "",
     gender: "male",
-    photoUrl:
-      "https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg",
-    about: " ",
+    photoUrl: DEFAULT_AVATAR,
+    about: "",
     skills: [],
   });
+
+  const [imageMode, setImageMode] = useState("upload"); // 'upload' | 'url'
+  const [isProcessingImage, setIsProcessingImage] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   const [apiError, setApiError] = useState("");
   const [success, setSuccess] = useState("");
@@ -81,8 +85,12 @@ const Signup = () => {
         break;
 
       case "photoUrl":
-        if (value && !validator.isURL(value))
-          error = "Please enter a valid URL.";
+        if (
+          value &&
+          !validator.isURL(value, { require_protocol: true, require_tld: false }) &&
+          !validator.isDataURI(value)
+        )
+          error = "Please enter a valid URL or upload a valid image.";
         break;
 
       case "about":
@@ -107,6 +115,54 @@ const Signup = () => {
     }
 
     return error;
+  };
+
+  const handleImageFile = async (file) => {
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setFormErrors((prev) => ({
+        ...prev,
+        photoUrl: "Please select a valid image file (PNG, JPG, WebP).",
+      }));
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      setFormErrors((prev) => ({
+        ...prev,
+        photoUrl: "Image file size should be under 10MB.",
+      }));
+      return;
+    }
+
+    try {
+      setIsProcessingImage(true);
+      const dataUrl = await compressImage(file);
+      setFormData((prev) => ({ ...prev, photoUrl: dataUrl }));
+      setFormErrors((prev) => ({ ...prev, photoUrl: null }));
+    } catch (err) {
+      setFormErrors((prev) => ({
+        ...prev,
+        photoUrl: err.message || "Failed to process image.",
+      }));
+    } finally {
+      setIsProcessingImage(false);
+    }
+  };
+
+  const handleFileInputChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleImageFile(file);
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      handleImageFile(file);
+    }
   };
 
   const handleChange = (e) => {
@@ -347,26 +403,136 @@ const Signup = () => {
                     </div>
                   </div>
 
-                  {/* Photo URL */}
+                  {/* Photo Section */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Profile Photo URL
-                    </label>
-                    <input
-                      type="url"
-                      name="photoUrl"
-                      value={
-                        formData.photoUrl ||
-                        "https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg"
-                      }
-                      onChange={handleChange}
-                      placeholder="Enter image URL"
-                      className={`w-full rounded-lg bg-gray-800/50 border ${
-                        formErrors.photoUrl
-                          ? "border-red-500"
-                          : "border-gray-700"
-                      } text-white px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-colors`}
-                    />
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="block text-sm font-medium text-gray-300">
+                        Profile Photo
+                      </label>
+                      <div className="flex items-center bg-gray-800/80 p-0.5 rounded-lg border border-gray-700 text-xs">
+                        <button
+                          type="button"
+                          onClick={() => setImageMode("upload")}
+                          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md transition-colors cursor-pointer ${
+                            imageMode === "upload"
+                              ? "bg-green-600 text-white font-medium shadow"
+                              : "text-gray-400 hover:text-gray-200"
+                          }`}
+                        >
+                          <Upload className="w-3.5 h-3.5" />
+                          Upload Image
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setImageMode("url")}
+                          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md transition-colors cursor-pointer ${
+                            imageMode === "url"
+                              ? "bg-green-600 text-white font-medium shadow"
+                              : "text-gray-400 hover:text-gray-200"
+                          }`}
+                        >
+                          <LinkIcon className="w-3.5 h-3.5" />
+                          Image URL
+                        </button>
+                      </div>
+                    </div>
+
+                    {imageMode === "upload" ? (
+                      <div className="space-y-3">
+                        <div
+                          onDragOver={(e) => {
+                            e.preventDefault();
+                            setIsDragging(true);
+                          }}
+                          onDragLeave={() => setIsDragging(false)}
+                          onDrop={handleDrop}
+                          className={`relative border-2 border-dashed rounded-xl p-5 text-center transition-all ${
+                            isDragging
+                              ? "border-green-500 bg-green-500/10"
+                              : "border-gray-700 hover:border-gray-600 bg-gray-800/30"
+                          }`}
+                        >
+                          <input
+                            type="file"
+                            accept="image/*"
+                            id="signup-photo-upload"
+                            onChange={handleFileInputChange}
+                            className="hidden"
+                          />
+                          <label
+                            htmlFor="signup-photo-upload"
+                            className="cursor-pointer flex flex-col items-center justify-center space-y-2"
+                          >
+                            <div className="w-12 h-12 rounded-full bg-gray-800 flex items-center justify-center text-green-400 border border-gray-700 shadow-inner">
+                              {isProcessingImage ? (
+                                <div className="animate-spin rounded-full h-5 w-5 border-2 border-green-500 border-t-transparent" />
+                              ) : (
+                                <Upload className="w-6 h-6" />
+                              )}
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-white">
+                                {isProcessingImage
+                                  ? "Optimizing image..."
+                                  : "Click to choose file or drag & drop"}
+                              </p>
+                              <p className="text-xs text-gray-400 mt-0.5">
+                                PNG, JPG, or WebP (auto-optimized)
+                              </p>
+                            </div>
+                          </label>
+                        </div>
+
+                        {formData.photoUrl &&
+                          formData.photoUrl !== DEFAULT_AVATAR && (
+                            <div className="flex items-center justify-between p-2.5 bg-gray-800/60 border border-gray-700 rounded-xl">
+                              <div className="flex items-center gap-3">
+                                <img
+                                  src={formData.photoUrl}
+                                  alt="Preview"
+                                  className="w-10 h-10 rounded-lg object-cover border border-gray-600"
+                                />
+                                <span className="text-xs text-green-400 font-medium">
+                                  Image uploaded & ready
+                                </span>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    photoUrl: DEFAULT_AVATAR,
+                                  }));
+                                  setFormErrors((prev) => ({
+                                    ...prev,
+                                    photoUrl: null,
+                                  }));
+                                }}
+                                className="cursor-pointer flex items-center gap-1 text-xs text-red-400 hover:text-red-300 px-2.5 py-1.5 rounded-lg bg-red-950/40 hover:bg-red-950/60 transition"
+                              >
+                                <X className="w-3.5 h-3.5" />
+                                Reset to Default
+                              </button>
+                            </div>
+                          )}
+                      </div>
+                    ) : (
+                      <div>
+                        <input
+                          type="url"
+                          name="photoUrl"
+                          value={formData.photoUrl}
+                          onChange={handleChange}
+                          placeholder="Paste image URL (e.g. https://...)"
+                          className={`w-full rounded-lg bg-gray-800/50 border ${
+                            formErrors.photoUrl
+                              ? "border-red-500"
+                              : "border-gray-700"
+                          } text-white px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-colors`}
+                        />
+                      </div>
+                    )}
+
                     {formErrors.photoUrl && (
                       <p className="text-red-400 text-sm mt-1">
                         {formErrors.photoUrl}

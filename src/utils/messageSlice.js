@@ -65,17 +65,33 @@ const messageSlice = createSlice({
                 state.conversations[conversationId] = [];
             }
 
-            // Avoid adding duplicates from socket events vs. optimistic updates
-            const messageExists = state.conversations[conversationId].find(
-                (msg) => msg._id === action.payload._id
-            );
+            // Check if this message already exists by _id, or reconciles an optimistic temporary message
+            const existingIndex = state.conversations[conversationId].findIndex((msg) => {
+                if (msg._id && action.payload._id && String(msg._id) === String(action.payload._id)) {
+                    return true;
+                }
+                if (
+                    msg.isOptimistic &&
+                    String(msg.senderId) === String(action.payload.senderId) &&
+                    String(msg.receiverId) === String(action.payload.receiverId) &&
+                    msg.message === action.payload.message
+                ) {
+                    return true;
+                }
+                return false;
+            });
 
-            if (!messageExists) {
-                console.log(`Adding message to conversation ${conversationId}`);
-                state.conversations[conversationId].push(action.payload);
+            if (existingIndex !== -1) {
+                state.conversations[conversationId][existingIndex] = action.payload;
             } else {
-                console.log(`Message ${action.payload._id} already exists in conversation.`);
+                state.conversations[conversationId].push(action.payload);
             }
+        },
+        clearMessages: (state) => {
+            state.conversations = {};
+            state.status = {};
+            state.unreadMessages = [];
+            state.unreadCount = 0;
         },
     },
     extraReducers: (builder) => {
@@ -109,5 +125,5 @@ const messageSlice = createSlice({
     },
 });
 
-export const { addMessage } = messageSlice.actions;
+export const { addMessage, clearMessages } = messageSlice.actions;
 export default messageSlice.reducer;

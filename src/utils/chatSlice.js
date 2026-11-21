@@ -24,8 +24,13 @@ const chatSlice = createSlice({
             // action.payload is the senderId
             state.notifications[action.payload] = true;
         },
+        resetChat: (state) => {
+            state.isChatOpen = false;
+            state.receiver = null;
+            state.notifications = {};
+        },
     },
 });
 
-export const { openChat, closeChat, addNotification } = chatSlice.actions;
+export const { openChat, closeChat, addNotification, resetChat } = chatSlice.actions;
 export default chatSlice.reducer;

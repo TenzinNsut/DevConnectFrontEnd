@@ -3,8 +3,10 @@ import axios from "axios"
 import { BASE_URL } from "../utils/constants";
 import { useNavigate, Link } from "react-router-dom";
 import { removeUser, logout } from "../utils/userSlice";
-import { clearFeed } from "../utils/feedSlice"
-import {clearConnections} from "../utils/connectionSlice"
+import { clearFeed } from "../utils/feedSlice";
+import { clearConnections } from "../utils/connectionSlice";
+import { clearMessages } from "../utils/messageSlice";
+import { resetChat } from "../utils/chatSlice";
 
 
 
@@ -29,7 +31,9 @@ const Navbar = () => {
 
       dispatch(clearFeed());
       dispatch(clearConnections());
-      dispatch(removeUser())
+      dispatch(clearMessages());
+      dispatch(resetChat());
+      dispatch(removeUser());
       dispatch(logout());
       navigate("/login");
       
