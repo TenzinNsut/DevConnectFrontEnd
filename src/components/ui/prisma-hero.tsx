@@ -213,7 +213,7 @@ const PrismaHero: React.FC<PrismaHeroProps> = ({
             muted
             playsInline
             poster="https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1920&auto=format&fit=crop"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover object-[center_30%] sm:object-center"
             src={videoSrc}
           />
         </motion.div>
@@ -222,16 +222,16 @@ const PrismaHero: React.FC<PrismaHeroProps> = ({
         <div className="noise-overlay pointer-events-none absolute inset-0 opacity-[0.55] mix-blend-overlay" />
 
         {/* Gradient overlay for contrast */}
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/90" />
 
         {/* Hanging Navbar at top center */}
-        <nav className="absolute left-1/2 top-0 z-30 -translate-x-1/2">
-          <div className="flex items-center gap-4 sm:gap-8 md:gap-12 lg:gap-14 rounded-b-2xl md:rounded-b-3xl bg-black px-6 py-2.5 sm:px-8 md:px-10 shadow-2xl border-b border-x border-white/10">
+        <nav className="absolute left-1/2 top-0 z-30 -translate-x-1/2 max-w-[95vw]">
+          <div className="flex items-center gap-2.5 sm:gap-6 md:gap-10 lg:gap-14 rounded-b-2xl md:rounded-b-3xl bg-black px-3.5 py-1.5 sm:px-6 sm:py-2 md:px-8 md:py-2.5 shadow-2xl border-b border-x border-white/10 whitespace-nowrap overflow-x-auto">
             {navItems.map((item, idx) => (
               <Link
                 key={idx}
                 to={item.href}
-                className="text-[11px] sm:text-xs md:text-sm font-medium transition-colors duration-200"
+                className="text-[11px] sm:text-xs md:text-sm font-medium transition-colors duration-200 whitespace-nowrap px-1 py-0.5"
                 style={{ color: "rgba(225, 224, 204, 0.75)" }}
                 onMouseEnter={(e) => (e.currentTarget.style.color = "#E1E0CC")}
                 onMouseLeave={(e) =>
@@ -250,13 +250,13 @@ const PrismaHero: React.FC<PrismaHeroProps> = ({
             x: fgTranslateX,
             y: fgTranslateY,
           }}
-          className="absolute bottom-0 left-0 right-0 px-6 pb-6 sm:px-10 sm:pb-8 md:px-14 md:pb-10 z-20"
+          className="absolute bottom-0 left-0 right-0 px-4 pb-4 sm:px-8 sm:pb-8 md:px-14 md:pb-10 z-20"
         >
-          <div className="grid grid-cols-12 items-end gap-6 sm:gap-8">
+          <div className="grid grid-cols-12 items-end gap-3 sm:gap-6 md:gap-8">
             {/* Title Column - Calculated font clamp so 10-char 'DevConnect' never overflows into column 2 */}
-            <div className="col-span-12 lg:col-span-7 xl:col-span-8 overflow-hidden pb-8">
+            <div className="col-span-12 lg:col-span-7 xl:col-span-8 overflow-hidden pb-0 lg:pb-3">
               <h1
-                className="font-medium leading-[0.88] tracking-[-0.06em] text-[13vw] sm:text-[11vw] md:text-[9.5vw] lg:text-[7.8vw] xl:text-[10vw]"
+                className="font-medium leading-[0.88] tracking-[-0.06em] text-[11.5vw] sm:text-[10vw] md:text-[9.5vw] lg:text-[7.8vw] xl:text-[7vw]"
                 style={{ color: "#E1E0CC" }}
               >
                 <WordsPullUp text={title} showAsterisk />
@@ -264,7 +264,7 @@ const PrismaHero: React.FC<PrismaHeroProps> = ({
             </div>
 
             {/* Subtitle & CTA button Column */}
-            <div className="col-span-12 lg:col-span-5 xl:col-span-4 flex flex-col gap-5 pb-2 lg:pb-4">
+            <div className="col-span-12 lg:col-span-5 xl:col-span-4 flex flex-col gap-3 sm:gap-5 pb-1 lg:pb-4">
               <motion.p
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -273,13 +273,12 @@ const PrismaHero: React.FC<PrismaHeroProps> = ({
                   delay: 0.5,
                   ease: [0.16, 1, 0.3, 1],
                 }}
-                className="text-xs sm:text-sm md:text-xl max-w-md font-normal leading-relaxed"
-                style={{ color: "rgba(225, 224, 204, 0.85)" }}
+                className="text-xs sm:text-sm md:text-base max-w-md font-normal leading-snug sm:leading-relaxed text-[#E1E0CC]/80"
               >
                 {subtitle}
               </motion.p>
 
-              <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap sm:flex-nowrap">
                 <Link to={ctaLink} className="self-start">
                   <motion.button
                     initial={{ y: 20, opacity: 0 }}
@@ -289,16 +288,11 @@ const PrismaHero: React.FC<PrismaHeroProps> = ({
                       delay: 0.7,
                       ease: [0.16, 1, 0.3, 1],
                     }}
-                    className="group inline-flex items-center gap-3 self-start rounded-full py-2 pl-6 pr-2 text-sm sm:text-base font-medium text-black transition-all hover:gap-4 cursor-pointer shadow-2xl whitespace-nowrap"
+                    className="h-11 sm:h-12 px-5 sm:px-6 rounded-full font-medium text-xs sm:text-sm text-black transition-all hover:opacity-95 cursor-pointer shadow-2xl inline-flex items-center justify-center gap-2 whitespace-nowrap"
                     style={{ backgroundColor: "#E1E0CC" }}
                   >
                     <span>{ctaText}</span>
-                    <span className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-black transition-transform group-hover:scale-105 flex-shrink-0">
-                      <ArrowRight
-                        className="h-4 w-4"
-                        style={{ color: "#E1E0CC" }}
-                      />
-                    </span>
+                    <ArrowRight className="w-4 h-4" />
                   </motion.button>
                 </Link>
 
@@ -310,9 +304,10 @@ const PrismaHero: React.FC<PrismaHeroProps> = ({
                       .getElementById("explore")
                       ?.scrollIntoView({ behavior: "smooth" });
                   }}
-                  className="px-5 py-2.5 rounded-full border border-white/15 bg-black/50 backdrop-blur-md text-xs sm:text-sm md:text-base font-medium text-[#E1E0CC]/80 hover:text-[#E1E0CC] hover:border-white/30 transition-all cursor-pointer whitespace-nowrap"
+                  className="h-11 sm:h-12 px-5 sm:px-6 rounded-full border border-white/15 bg-black/60 backdrop-blur-md text-xs sm:text-sm font-medium text-[#E1E0CC]/80 hover:text-[#E1E0CC] hover:border-white/30 hover:bg-white/5 transition-all cursor-pointer whitespace-nowrap inline-flex items-center justify-center gap-2"
                 >
-                  Explore Platform ↓
+                  <span>Explore Platform</span>
+                  <ChevronDown className="w-4 h-4 text-[#E1E0CC]/60" />
                 </a>
               </div>
             </div>
